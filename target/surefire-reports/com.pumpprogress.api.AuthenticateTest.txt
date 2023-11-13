@@ -1,0 +1,4 @@
+-------------------------------------------------------------------------------
+Test set: com.pumpprogress.api.AuthenticateTest
+-------------------------------------------------------------------------------
+Tests run: 5, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 5.625 s - in com.pumpprogress.api.AuthenticateTest
