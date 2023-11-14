@@ -7,6 +7,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import javax.crypto.SecretKey;
@@ -14,6 +15,8 @@ import javax.crypto.SecretKey;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.AuthorityUtils;
 import org.springframework.stereotype.Service;
+
+import com.pumpprogress.api.Model.Role;
 
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
@@ -26,6 +29,12 @@ public class JwtTokenUtil implements Serializable {
     private static final SecretKey key = Keys.hmacShaKeyFor(SECRET_KEY.getBytes(StandardCharsets.UTF_8));
 
     public String getUsernameFromToken(String jwtToken) {
+        System.out.println("Authorities: " + Jwts.parser()
+                .verifyWith(key)
+                .build()
+                .parseSignedClaims(jwtToken)
+                .getPayload()
+                .get("authorities"));
         return Jwts.parser()
                 .verifyWith(key)
                 .build()
@@ -34,10 +43,12 @@ public class JwtTokenUtil implements Serializable {
                 .getSubject();
     }
 
-    public String generateToken(String email) throws NoSuchAlgorithmException {
+    public String generateToken(String email, Set<Role> roles) throws NoSuchAlgorithmException {
         Map<String, Object> claims = new HashMap<>();
         List<GrantedAuthority> grantedAuthorities = AuthorityUtils
-                .commaSeparatedStringToAuthorityList("ROLE_USER, ADMIN_USER");
+                .commaSeparatedStringToAuthorityList(roles.stream()
+                        .map(Role::getName)
+                        .collect(Collectors.joining(",")));
 
         claims.put("authorities",
                 grantedAuthorities.stream()

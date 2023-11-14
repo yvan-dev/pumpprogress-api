@@ -15,6 +15,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -42,6 +43,7 @@ public class User {
     @JoinTable(name = "user_role",
                 joinColumns = @JoinColumn(name = "user_id"),
                 inverseJoinColumns = @JoinColumn(name = "role_id")
-                )
-    private Set<Role> roles = new HashSet<>();
+    )
+    // By default all user have the role USER
+    private Set<Role> roles = new HashSet<>(Collections.singletonList(new Role(2, "USER")));
 }
