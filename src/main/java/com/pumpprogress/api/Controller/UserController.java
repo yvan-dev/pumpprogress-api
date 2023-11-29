@@ -3,6 +3,7 @@ package com.pumpprogress.api.Controller;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
@@ -26,8 +27,6 @@ public class UserController {
         try {
             int idNum = Integer.parseInt(id);
             User user = userService.getUserById(idNum);
-            if (user == null)
-                return ResponseEntity.notFound().build();
             return ResponseEntity.ok(user);
         } catch (NumberFormatException e) {
             return ResponseEntity.badRequest().build();
@@ -37,68 +36,38 @@ public class UserController {
     @GetMapping("/email/{email}")
     public ResponseEntity<User> getUserByEmail(@PathVariable String email) {
         User user = userService.getUserByEmail(email);
-        if (user == null)
-            return ResponseEntity.notFound().build();
         return ResponseEntity.ok(user);
     }
 
-    @PostMapping("/add")
-    public ResponseEntity<User> addUser(@RequestBody User user) {
-        try {
-            if (user.getName().isEmpty() || user.getEmail().isEmpty() || user.getPassword().isEmpty())
-                return ResponseEntity.badRequest().build();
-            if (userService.getUserByEmail(user.getEmail()) != null)
-                return ResponseEntity.status(409).build();
-            User userCreated = userService.addUser(user);
-            return ResponseEntity.created(null).body(userCreated);
-        } catch (Exception e) {
-            return ResponseEntity.badRequest().build();
-        }
+    @PostMapping
+    public ResponseEntity<User> addUser(@RequestBody @Validated User user) {
+        User userCreated = userService.addUser(user);
+        return ResponseEntity.created(null).body(userCreated);
     }
 
     @PreAuthorize("hasAuthority('ADMIN')")
-    @PostMapping("/add/admin")
-    public ResponseEntity<User> addAdmin(@RequestBody User user) {
-        try {
-            if (user.getName().isEmpty() || user.getEmail().isEmpty() || user.getPassword().isEmpty())
-                return ResponseEntity.badRequest().build();
-            if (userService.getUserByEmail(user.getEmail()) != null)
-                return ResponseEntity.status(409).build();
+    @PostMapping("/admin")
+    public ResponseEntity<User> addAdmin(@RequestBody @Validated User user) {
             User userCreated = userService.addAdmin(user);
             return ResponseEntity.created(null).body(userCreated);
-        } catch (Exception e) {
-            return ResponseEntity.badRequest().build();
-        }
     }
 
-    @PatchMapping("/update/{id}")
+    @PatchMapping("/{id}")
     public ResponseEntity<User> updateUser(@PathVariable String id, @RequestBody User user) {
         try {
             int idNum = Integer.parseInt(id);
-            User userToUpdate = userService.getUserById(idNum);
-            if (userToUpdate == null)
-                return ResponseEntity.notFound().build();
-            if (user.getName() != null)
-                userToUpdate.setName(user.getName());
-            if (user.getEmail() != null)
-                userToUpdate.setEmail(user.getEmail());
-            if (user.getPassword() != null)
-                userToUpdate.setPassword(userService.cryptPassword(user.getPassword()));
-            User userUpdated = userService.updateUser(userToUpdate);
+            User userUpdated = userService.updateUser(idNum, user);
             return ResponseEntity.ok(userUpdated);
         } catch (NumberFormatException e) {
             return ResponseEntity.badRequest().build();
         }
     }
 
-    @PatchMapping("/update/{id}/addUserRole")
+    @PatchMapping("/{id}/addUserRole")
     public ResponseEntity<User> addUserRole(@PathVariable String id) {
         try {
             int idNum = Integer.parseInt(id);
-            User userToUpdate = userService.getUserById(idNum);
-            if (userToUpdate == null)
-                return ResponseEntity.notFound().build();
-            userToUpdate = userService.addUserRole(userToUpdate);
+            User userToUpdate = userService.addUserRole(idNum);
             return ResponseEntity.ok(userToUpdate);
         } catch (NumberFormatException e) {
             return ResponseEntity.badRequest().build();
@@ -106,14 +75,11 @@ public class UserController {
     }
 
     @PreAuthorize("hasAuthority('ADMIN')")
-    @PatchMapping("/update/{id}/addAdminRole")
+    @PatchMapping("/{id}/addAdminRole")
     public ResponseEntity<User> addAdminRole(@PathVariable String id) {
         try {
             int idNum = Integer.parseInt(id);
-            User userToUpdate = userService.getUserById(idNum);
-            if (userToUpdate == null)
-                return ResponseEntity.notFound().build();
-            userToUpdate = userService.addAdminRole(userToUpdate);
+            User userToUpdate = userService.addAdminRole(idNum);
             return ResponseEntity.ok(userToUpdate);
         } catch (NumberFormatException e) {
             return ResponseEntity.badRequest().build();
@@ -121,14 +87,11 @@ public class UserController {
     }
 
     @PreAuthorize("hasAuthority('ADMIN')")
-    @PatchMapping("/update/{id}/removeAdminRole")
+    @PatchMapping("/{id}/removeAdminRole")
     public ResponseEntity<User> removeAdminRole(@PathVariable String id) {
         try {
             int idNum = Integer.parseInt(id);
-            User userToUpdate = userService.getUserById(idNum);
-            if (userToUpdate == null)
-                return ResponseEntity.notFound().build();
-            userToUpdate = userService.removeAdminRole(userToUpdate);
+            User userToUpdate = userService.removeAdminRole(idNum);
             return ResponseEntity.ok(userToUpdate);
         } catch (NumberFormatException e) {
             return ResponseEntity.badRequest().build();
@@ -136,28 +99,22 @@ public class UserController {
     }
 
     @PreAuthorize("hasAuthority('ADMIN')")
-    @PatchMapping("/update/{id}/removeUserRole")
+    @PatchMapping("/{id}/removeUserRole")
     public ResponseEntity<User> removeUserRole(@PathVariable String id) {
         try {
             int idNum = Integer.parseInt(id);
-            User userToUpdate = userService.getUserById(idNum);
-            if (userToUpdate == null)
-                return ResponseEntity.notFound().build();
-            userToUpdate = userService.removeUserRole(userToUpdate);
+            User userToUpdate = userService.removeUserRole(idNum);
             return ResponseEntity.ok(userToUpdate);
         } catch (NumberFormatException e) {
             return ResponseEntity.badRequest().build();
         }
     }
 
-    @DeleteMapping("/delete/{id}")
+    @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteUser(@PathVariable String id) {
         try {
             int idNum = Integer.parseInt(id);
-            User user = userService.getUserById(idNum);
-            if (user == null)
-                return ResponseEntity.notFound().build();
-            userService.deleteUser(user);
+            userService.deleteUser(idNum);
             return ResponseEntity.ok().build();
         } catch (NumberFormatException e) {
             return ResponseEntity.badRequest().build();
@@ -165,14 +122,11 @@ public class UserController {
     }
 
     @PreAuthorize("hasAuthority('ADMIN')")
-    @DeleteMapping("/delete/{id}/admin")
+    @DeleteMapping("/{id}/admin")
     public ResponseEntity<Void> deleteAdmin(@PathVariable String id) {
         try {
             int idNum = Integer.parseInt(id);
-            User user = userService.getUserById(idNum);
-            if (user == null)
-                return ResponseEntity.notFound().build();
-            userService.deleteUser(user);
+            userService.deleteUser(idNum);
             return ResponseEntity.ok().build();
         } catch (NumberFormatException e) {
             return ResponseEntity.badRequest().build();

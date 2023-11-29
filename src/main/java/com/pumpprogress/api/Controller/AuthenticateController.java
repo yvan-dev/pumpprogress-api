@@ -2,12 +2,13 @@ package com.pumpprogress.api.Controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.crypto.bcrypt.BCrypt;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.pumpprogress.api.Exception.UserNotFoundException;
 import com.pumpprogress.api.Model.Credential;
 import com.pumpprogress.api.Model.User;
 import com.pumpprogress.api.Service.JwtTokenUtil;
@@ -24,19 +25,18 @@ public class AuthenticateController {
     private JwtTokenUtil jwtTokenUtil;
 
     @PostMapping
-    public ResponseEntity<User> authenticate(@RequestBody Credential credential) {
+    public ResponseEntity<User> authenticate(@RequestBody @Validated Credential credential) {
         try {
-            if (credential.getEmail().isEmpty() || credential.getPassword().isEmpty())
-                return ResponseEntity.badRequest().build();
             User user = userService.getUserByEmail(credential.getEmail());
-            if (user == null || !userService.checkPassword(credential.getPassword(), user.getPassword()))
-                return ResponseEntity.status(401).build();
-            user.setToken(jwtTokenUtil.generateToken(user.getEmail(), user.getRoles()));
-            userService.updateUser(user);
+            userService.checkPassword(credential.getPassword(), user.getPassword());
+            String token = jwtTokenUtil.generateToken(user.getEmail(), user.getRoles());
+            user = userService.updateToken(user.getId(), token);
             return ResponseEntity.ok(user);
+        } catch (UserNotFoundException e) {
+            return ResponseEntity.status(401).build();
         } catch (Exception e) {
             e.printStackTrace();
-            return ResponseEntity.badRequest().build();
+            return ResponseEntity.internalServerError().build();
         }
     }
 }

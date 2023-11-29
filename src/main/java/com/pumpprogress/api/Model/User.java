@@ -19,7 +19,7 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 
-import javax.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.NotBlank;
 
 @Entity
 @AllArgsConstructor
@@ -31,19 +31,20 @@ public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
-    @NotEmpty(message = "Name cannot be empty")
+
+    @NotBlank(message = "Name is mandatory")
     private String name;
-    @NotEmpty(message = "Email cannot be empty")
+
+    @NotBlank(message = "Email is mandatory")
     private String email;
-    @NotEmpty(message = "Password cannot be empty")
+
+    @NotBlank(message = "Password is mandatory")
     private String password;
+    
     private String token;
 
     @ManyToMany(fetch = FetchType.EAGER)
-    @JoinTable(name = "user_role",
-                joinColumns = @JoinColumn(name = "user_id"),
-                inverseJoinColumns = @JoinColumn(name = "role_id")
-    )
+    @JoinTable(name = "user_role", joinColumns = @JoinColumn(name = "user_id"), inverseJoinColumns = @JoinColumn(name = "role_id"))
     // By default all user have the role USER
     private Set<Role> roles = new HashSet<>(Collections.singletonList(new Role(2, "USER")));
 }

@@ -13,20 +13,16 @@ import org.springframework.stereotype.Service;
 
 import com.pumpprogress.api.Model.Role;
 import com.pumpprogress.api.Model.User;
-import com.pumpprogress.api.Repository.UserRepository;
 
 @Service
 public class JwtUserDetailsService implements UserDetailsService {
 
     @Autowired
-    private UserRepository userRepository;
+    private UserService userService;
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        User user = userRepository.findByEmail(username);
-        if (user == null) {
-            throw new UsernameNotFoundException("User not found with Email: " + username);
-        }
+        User user = userService.getUserByEmail(username);
         return new org.springframework.security.core.userdetails.User(user.getEmail(), user.getPassword(),
                 mapRolesToAuthorities(user.getRoles()));
     }
