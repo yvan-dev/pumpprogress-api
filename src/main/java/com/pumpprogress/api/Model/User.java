@@ -1,4 +1,4 @@
-package com.pumpprogress.api.Model;
+package com.pumpprogress.api.model;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -40,7 +40,7 @@ public class User {
 
     @NotBlank(message = "Password is mandatory")
     private String password;
-    
+
     private String token;
 
     @ManyToMany(fetch = FetchType.EAGER)

@@ -1,4 +1,4 @@
-package com.pumpprogress.api.Service;
+package com.pumpprogress.api.service;
 
 import java.io.Serializable;
 import java.nio.charset.StandardCharsets;
@@ -16,7 +16,7 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.AuthorityUtils;
 import org.springframework.stereotype.Service;
 
-import com.pumpprogress.api.Model.Role;
+import com.pumpprogress.api.model.Role;
 
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
@@ -29,12 +29,6 @@ public class JwtTokenUtil implements Serializable {
     private static final SecretKey key = Keys.hmacShaKeyFor(SECRET_KEY.getBytes(StandardCharsets.UTF_8));
 
     public String getUsernameFromToken(String jwtToken) {
-        System.out.println("Authorities: " + Jwts.parser()
-                .verifyWith(key)
-                .build()
-                .parseSignedClaims(jwtToken)
-                .getPayload()
-                .get("authorities"));
         return Jwts.parser()
                 .verifyWith(key)
                 .build()
@@ -43,7 +37,7 @@ public class JwtTokenUtil implements Serializable {
                 .getSubject();
     }
 
-    public String generateToken(String email, Set<Role> roles) throws NoSuchAlgorithmException {
+    public String generateToken(String email, Set<Role> roles) {
         Map<String, Object> claims = new HashMap<>();
         List<GrantedAuthority> grantedAuthorities = AuthorityUtils
                 .commaSeparatedStringToAuthorityList(roles.stream()

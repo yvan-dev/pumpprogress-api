@@ -1,4 +1,4 @@
-package com.pumpprogress.api.Service;
+package com.pumpprogress.api.service;
 
 import java.util.Collection;
 import java.util.stream.Collectors;
@@ -11,14 +11,18 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
-import com.pumpprogress.api.Model.Role;
-import com.pumpprogress.api.Model.User;
+import com.pumpprogress.api.model.Role;
+import com.pumpprogress.api.model.User;
 
 @Service
 public class JwtUserDetailsService implements UserDetailsService {
 
-    @Autowired
-    private UserService userService;
+
+    private final UserService userService;
+
+    public JwtUserDetailsService(UserService userService) {
+        this.userService = userService;
+    }
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {

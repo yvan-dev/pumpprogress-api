@@ -1,4 +1,4 @@
-package com.pumpprogress.api.Exception;
+package com.pumpprogress.api.exception;
 
 public class UserNotFoundException extends RuntimeException {
     public UserNotFoundException(String message) {

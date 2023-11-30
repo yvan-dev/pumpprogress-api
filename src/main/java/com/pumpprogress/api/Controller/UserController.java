@@ -1,6 +1,5 @@
-package com.pumpprogress.api.Controller;
+package com.pumpprogress.api.controller;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
@@ -13,14 +12,18 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.pumpprogress.api.Model.User;
-import com.pumpprogress.api.Service.UserService;
+import com.pumpprogress.api.model.User;
+import com.pumpprogress.api.service.UserService;
 
 @RestController
 @RequestMapping("/api/users")
 public class UserController {
-    @Autowired
-    private UserService userService;
+
+    private final UserService userService;
+
+    public UserController(UserService userService) {
+        this.userService = userService;
+    }
 
     @GetMapping("/id/{id}")
     public ResponseEntity<User> getUserById(@PathVariable String id) {

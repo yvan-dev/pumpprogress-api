@@ -1,4 +1,4 @@
-package com.pumpprogress.api.Configuration;
+package com.pumpprogress.api.configuration;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

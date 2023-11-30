@@ -1,4 +1,4 @@
-package com.pumpprogress.api.Model;
+package com.pumpprogress.api.model;
 
 import jakarta.validation.constraints.NotBlank;
 
@@ -14,7 +14,7 @@ import lombok.Setter;
 public class Credential {
     @NotBlank
     private String email;
-    
+
     @NotBlank
     private String password;
 }

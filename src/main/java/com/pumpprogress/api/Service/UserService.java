@@ -1,22 +1,25 @@
-package com.pumpprogress.api.Service;
+package com.pumpprogress.api.service;
 
 import java.util.Set;
 
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.security.crypto.bcrypt.BCrypt;
 
-import com.pumpprogress.api.Exception.UserEmailAlreadyExistException;
-import com.pumpprogress.api.Exception.UserNotFoundException;
-import com.pumpprogress.api.Model.Role;
-import com.pumpprogress.api.Model.User;
-import com.pumpprogress.api.Repository.UserRepository;
+import com.pumpprogress.api.exception.UserEmailAlreadyExistException;
+import com.pumpprogress.api.exception.UserNotFoundException;
+import com.pumpprogress.api.model.Role;
+import com.pumpprogress.api.model.User;
+import com.pumpprogress.api.repository.UserRepository;
 
 @Service
 public class UserService {
-    @Autowired
-    private UserRepository userRepository;
+
+    private final UserRepository userRepository;
+
+    public UserService(UserRepository userRepository) {
+        this.userRepository = userRepository;
+    }
 
     public String cryptPassword(String password) {
         return BCrypt.hashpw(password, BCrypt.gensalt());

@@ -1,4 +1,4 @@
-package com.pumpprogress.api.Model;
+package com.pumpprogress.api.model;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;

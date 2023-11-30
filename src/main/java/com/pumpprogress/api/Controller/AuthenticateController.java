@@ -1,6 +1,5 @@
-package com.pumpprogress.api.Controller;
+package com.pumpprogress.api.controller;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -8,21 +7,24 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.pumpprogress.api.Exception.UserNotFoundException;
-import com.pumpprogress.api.Model.Credential;
-import com.pumpprogress.api.Model.User;
-import com.pumpprogress.api.Service.JwtTokenUtil;
-import com.pumpprogress.api.Service.UserService;
+import com.pumpprogress.api.exception.UserNotFoundException;
+import com.pumpprogress.api.model.Credential;
+import com.pumpprogress.api.model.User;
+import com.pumpprogress.api.service.JwtTokenUtil;
+import com.pumpprogress.api.service.UserService;
 
 @RestController
 @RequestMapping("/api/authenticate")
 public class AuthenticateController {
 
-    @Autowired
-    private UserService userService;
+    private final UserService userService;
 
-    @Autowired
-    private JwtTokenUtil jwtTokenUtil;
+    private final JwtTokenUtil jwtTokenUtil;
+
+    public AuthenticateController(UserService userService, JwtTokenUtil jwtTokenUtil) {
+        this.userService = userService;
+        this.jwtTokenUtil = jwtTokenUtil;
+    }
 
     @PostMapping
     public ResponseEntity<User> authenticate(@RequestBody @Validated Credential credential) {

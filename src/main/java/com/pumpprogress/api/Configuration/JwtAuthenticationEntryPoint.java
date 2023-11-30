@@ -1,4 +1,4 @@
-package com.pumpprogress.api.Configuration;
+package com.pumpprogress.api.configuration;
 
 import java.io.IOException;
 import java.io.Serializable;

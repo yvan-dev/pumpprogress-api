@@ -13,11 +13,11 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.pumpprogress.api.Model.User;
+import com.pumpprogress.api.model.User;
 
 @SpringBootTest
 @AutoConfigureMockMvc
-public class AuthenticateTest {
+class AuthenticateTest {
     @Autowired
     private MockMvc mockMvc;
     private static final String BASE_URL = "/api/authenticate";
@@ -25,7 +25,7 @@ public class AuthenticateTest {
     private static final String CREDENTIAL = "{\"email\":\"admin@gmail.com\", \"password\":\"admin\"}";
 
     @Test
-    public void testAuthenticate() throws Exception {
+    void testAuthenticate() throws Exception {
         MvcResult result = mockMvc.perform(post(BASE_URL)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(CREDENTIAL))
@@ -38,7 +38,7 @@ public class AuthenticateTest {
     }
 
     @Test
-    public void testAuthenticateFail() throws Exception {
+    void testAuthenticateFail() throws Exception {
         mockMvc.perform(post(BASE_URL)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content("{\"email\":\"bidon@bidon.fr\", \"password\":\"bidon\"}"))
@@ -46,7 +46,7 @@ public class AuthenticateTest {
     }
 
     @Test
-    public void testAuthenticateMissingEmailField() throws Exception {
+    void testAuthenticateMissingEmailField() throws Exception {
         mockMvc.perform(post(BASE_URL)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content("{\"email\":\"\", \"password\":\"bidon\"}"))
@@ -54,7 +54,7 @@ public class AuthenticateTest {
     }
 
     @Test
-    public void testAuthenticateMissingPasswordField() throws Exception {
+    void testAuthenticateMissingPasswordField() throws Exception {
         mockMvc.perform(post(BASE_URL)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content("{\"email\":\"bidon@bidon.fr\", \"password\":\"\"}"))
@@ -62,7 +62,7 @@ public class AuthenticateTest {
     }
 
     @Test
-    public void testAuthenticateWrongCredentialObj() throws Exception {
+    void testAuthenticateWrongCredentialObj() throws Exception {
         mockMvc.perform(post(BASE_URL)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content("{\"email\":\"\"}"))

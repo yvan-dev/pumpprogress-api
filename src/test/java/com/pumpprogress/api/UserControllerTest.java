@@ -13,7 +13,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.pumpprogress.api.Model.User;
+import com.pumpprogress.api.model.User;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -27,7 +27,7 @@ import static org.hamcrest.Matchers.is;
 @TestInstance(Lifecycle.PER_CLASS)
 @SpringBootTest
 @AutoConfigureMockMvc
-public class UserControllerTest {
+class UserControllerTest {
     @Autowired
     private MockMvc mockMvc;
     private static final String BASE_URL = "/api/users";
@@ -91,7 +91,7 @@ public class UserControllerTest {
     }
 
     @Test
-    public void testTokenHasNoRoleAdmin() throws Exception {
+    void testTokenHasNoRoleAdmin() throws Exception {
         mockMvc.perform(post(BASE_URL + "/admin")
                 .contentType(MediaType.APPLICATION_JSON)
                 .header("Authorization", "Bearer " + token_user)
@@ -100,34 +100,35 @@ public class UserControllerTest {
     }
 
     @Test
-    public void testRemoveAdminRole() throws Exception {
+    void testRemoveAdminRole() throws Exception {
         mockMvc.perform(patch(BASE_URL + "/" + admin_id + "/removeAdminRole")
                 .header("Authorization", "Bearer " + token_admin))
                 .andExpect(status().isOk());
     }
 
     @Test
-    public void testAddAdminRole() throws Exception {
+    void testAddAdminRole() throws Exception {
         mockMvc.perform(patch(BASE_URL + "/" + admin_id + "/addAdminRole")
                 .header("Authorization", "Bearer " + token_admin))
                 .andExpect(status().isOk());
     }
 
     @Test
-    public void testAddUserRole() throws Exception {
+    void testAddUserRole() throws Exception {
         mockMvc.perform(patch(BASE_URL + "/" + admin_id + "/addUserRole")
                 .header("Authorization", "Bearer " + token_admin))
                 .andExpect(status().isOk());
     }
 
-    @Test void testRemoveUserRole() throws Exception {
+    @Test
+    void testRemoveUserRole() throws Exception {
         mockMvc.perform(patch(BASE_URL + "/" + admin_id + "/removeUserRole")
                 .header("Authorization", "Bearer " + token_admin))
                 .andExpect(status().isOk());
     }
 
     @Test
-    public void testGetUserById() throws Exception {
+    void testGetUserById() throws Exception {
 
         mockMvc.perform(get(BASE_URL + "/id/" + user_id).header("Authorization", "Bearer " + token_user))
                 .andExpect(status().isOk())
@@ -136,7 +137,7 @@ public class UserControllerTest {
     }
 
     @Test
-    public void testGetUserByEmail() throws Exception {
+    void testGetUserByEmail() throws Exception {
 
         mockMvc.perform(get(BASE_URL + "/email/" + USER_EMAIL).header("Authorization", "Bearer " + token_user))
                 .andExpect(status().isOk())
@@ -145,28 +146,28 @@ public class UserControllerTest {
     }
 
     @Test
-    public void testGetUserByIdBadRequest() throws Exception {
+    void testGetUserByIdBadRequest() throws Exception {
 
         mockMvc.perform(get(BASE_URL + "/id/abc").header("Authorization", "Bearer " + token_user))
                 .andExpect(status().isBadRequest());
     }
 
     @Test
-    public void testGetUserByIdNotFound() throws Exception {
+    void testGetUserByIdNotFound() throws Exception {
 
         mockMvc.perform(get(BASE_URL + "/id/0").header("Authorization", "Bearer " + token_user))
                 .andExpect(status().isNotFound());
     }
 
     @Test
-    public void testGetUserByEmailNotFound() throws Exception {
+    void testGetUserByEmailNotFound() throws Exception {
 
         mockMvc.perform(get(BASE_URL + "/email/abc").header("Authorization", "Bearer " + token_user))
                 .andExpect(status().isNotFound());
     }
 
     @Test
-    public void testAddUserBadRequest() throws Exception {
+    void testAddUserBadRequest() throws Exception {
         String json = "{\"name\":\"John Doe\",\"email\":\"johndoe21@gmail.com\", \"password\":\"\"}";
 
         mockMvc.perform(post(BASE_URL)
@@ -177,7 +178,7 @@ public class UserControllerTest {
     }
 
     @Test
-    public void testAddUserConflict() throws Exception {
+    void testAddUserConflict() throws Exception {
 
         mockMvc.perform(post(BASE_URL)
                 .contentType(MediaType.APPLICATION_JSON)
@@ -187,14 +188,14 @@ public class UserControllerTest {
     }
 
     @Test
-    public void testDeleteUserBadRequest() throws Exception {
+    void testDeleteUserBadRequest() throws Exception {
 
         mockMvc.perform(delete(BASE_URL + "/abc").header("Authorization", "Bearer " + token_user))
                 .andExpect(status().isBadRequest());
     }
 
     @Test
-    public void testDeleteUserNotFound() throws Exception {
+    void testDeleteUserNotFound() throws Exception {
 
         mockMvc.perform(delete(BASE_URL + "/0").header("Authorization", "Bearer " + token_user))
                 .andExpect(status().isNotFound());
